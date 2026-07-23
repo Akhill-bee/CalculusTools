@@ -4,6 +4,8 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask import Flask, render_template
+
 
 from app.solvers.derivatives import differentiate_expression
 from app.solvers.implicit import differentiate_implicit
@@ -35,10 +37,11 @@ def ratelimit_handler(e):
         "error": "Rate limit exceeded. Please slow down and try again shortly!"
     }), 429
 
+
 @app.route("/")
 def index():
-    # Safely serve static index.html from TEMPLATE_DIR
-    return send_from_directory(TEMPLATE_DIR, 'index.html')
+    # Passes index.html through Jinja2, which consumes {% raw %} and {% endraw %}
+    return render_template('index.html')
 
 # --- API Endpoints ---
 
