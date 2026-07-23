@@ -1,6 +1,4 @@
-# app/main.py
-import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -10,18 +8,16 @@ from app.solvers.implicit import differentiate_implicit
 from app.solvers.integrals import integrate_expression
 from app.solvers.taylor import calculate_taylor_series
 
-app = Flask(__name__, static_folder='../', static_url_path='')
+app = Flask(__name__)
 CORS(app)
 
-# Initialize Limiter using the client's IP address
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["200 per day", "50 per hour"], # Default global limits
-    storage_uri="memory://"                         # Uses in-memory storage
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
 )
 
-# Custom error handler when a user hits a rate limit
 @app.errorhandler(429)
 def ratelimit_handler(e):
     return jsonify({
@@ -31,12 +27,11 @@ def ratelimit_handler(e):
 
 @app.route("/")
 def index():
-    # Serves index.html when you go to http://127.0.0.1:5001/
-    return send_from_directory('../', 'index.html')
+    # Flask automatically looks inside the 'templates' folder
+    return render_template('index.html')
 
-# --- API Endpoints with Strict Rate Limits ---
+# --- API Endpoints ---
 
-# Limits derivative calls to 10 requests per minute per IP
 @app.route("/api/derivative", methods=["POST"])
 @limiter.limit("10 per minute")
 def derivative():
@@ -85,6 +80,6 @@ def taylor():
     ))
 
 if __name__ == "__main__":
-    # Render assigns a dynamic port via environment variables
+    import os
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port)
