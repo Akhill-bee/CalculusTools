@@ -1,3 +1,4 @@
+{% raw %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,7 +118,7 @@
       border-color: var(--accent);
     }
 
-    /* MathLive Field Custom Styling */
+    /* MathLive Custom Field Styling */
     math-field {
       width: 100%;
       font-size: 1.25rem;
@@ -139,7 +140,6 @@
       border-color: var(--accent);
     }
 
-    /* Hide virtual keyboard and context menu toggles */
     math-field::part(virtual-keyboard-toggle),
     math-field::part(menu-toggle) {
       display: none;
@@ -279,22 +279,20 @@
   </div>
 
   <script>
+    // Relative path works on both localhost and live deployment
     const API_BASE_URL = "/api";
     let currentTab = "derivatives";
 
     document.addEventListener('DOMContentLoaded', () => {
       const mf = document.getElementById('latex_input');
-
-      // Disable context menu options (fonts, colors, background options)
-      mf.menuItems = [];
-
-      // Limit shortcuts so text like 'int' doesn't auto-convert to \int
-      mf.inlineShortcuts = {
-        'pi': '\\pi',
-        'theta': '\\theta',
-        'sqrt': '\\sqrt{#?}'
-      };
-
+      if (mf) {
+        mf.menuItems = [];
+        mf.inlineShortcuts = {
+          'pi': '\\pi',
+          'theta': '\\theta',
+          'sqrt': '\\sqrt{#?}'
+        };
+      }
       if (window.mathVirtualKeyboard) {
         window.mathVirtualKeyboard.layouts = ['numeric', 'symbols'];
       }
@@ -314,7 +312,7 @@
       document.getElementById('taylor-options').style.display = tabName === 'taylor' ? 'block' : 'none';
 
       const mathField = document.getElementById('latex_input');
-      if (tabName === 'derivatives') mathField.value = "f(x) = x^2 \\sin(x)";
+      if (tabName === 'derivatives') mathField.value = "x^2 \\sin(x)";
       if (tabName === 'implicit') mathField.value = "x^2 + y^2 = 25";
       if (tabName === 'integrals') mathField.value = "x^2 \\cos(x)";
       if (tabName === 'taylor') mathField.value = "\\sin(x)";
@@ -325,20 +323,8 @@
 
       const submitBtn = document.querySelector('.submit-btn');
       const resultDiv = document.getElementById('result-container');
-
       const mathField = document.getElementById('latex_input');
       const inputLatex = mathField.value.trim();
-
-      // Check for forbidden structures like matrices or integrals in derivative field
-      const forbiddenPatterns = [/\\begin\{matrix\}/, /\\begin\{bmatrix\}/];
-      if (currentTab !== 'integrals') forbiddenPatterns.push(/\\int/);
-
-      for (const pattern of forbiddenPatterns) {
-        if (pattern.test(inputLatex)) {
-          resultDiv.innerHTML = `<span class="error">Error: Unsupported formatting/structure in input.</span>`;
-          return;
-        }
-      }
 
       submitBtn.disabled = true;
       submitBtn.innerText = "Calculating...";
@@ -385,7 +371,7 @@
           resultDiv.innerHTML = `<span class="error">Error: ${data.error}</span>`;
         }
       } catch (err) {
-        resultDiv.innerHTML = `<span class="error">Failed to connect to backend server. Make sure "python -m app.main" is running on port 5001.</span>`;
+        resultDiv.innerHTML = `<span class="error">Failed to connect to backend server.</span>`;
       } finally {
         submitBtn.disabled = false;
         submitBtn.innerText = "Solve";
@@ -398,3 +384,4 @@
   </script>
 </body>
 </html>
+{% endraw %}

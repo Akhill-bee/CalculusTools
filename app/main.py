@@ -1,4 +1,6 @@
-from flask import Flask, request, jsonify, render_template
+# app/main.py
+import os
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -8,9 +10,17 @@ from app.solvers.implicit import differentiate_implicit
 from app.solvers.integrals import integrate_expression
 from app.solvers.taylor import calculate_taylor_series
 
-app = Flask(__name__)
+# Calculate absolute path to the templates directory (supports both root/templates and app/templates)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
+
+if not os.path.exists(TEMPLATE_DIR):
+    TEMPLATE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+
+app = Flask(__name__, template_folder=TEMPLATE_DIR)
 CORS(app)
 
+# Initialize Limiter using the client's IP address
 limiter = Limiter(
     get_remote_address,
     app=app,
@@ -27,8 +37,8 @@ def ratelimit_handler(e):
 
 @app.route("/")
 def index():
-    # Flask automatically looks inside the 'templates' folder
-    return render_template('index.html')
+    # Safely serve static index.html from TEMPLATE_DIR
+    return send_from_directory(TEMPLATE_DIR, 'index.html')
 
 # --- API Endpoints ---
 
@@ -80,6 +90,5 @@ def taylor():
     ))
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5001))
     app.run(host="0.0.0.0", port=port)
