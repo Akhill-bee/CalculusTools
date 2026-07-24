@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculus Suite</title>
 
+  <link rel="stylesheet" href="https://home.akhilbee.dev/theme.css">
   <script src="https://home.akhilbee.dev/footer.js" defer></script>
 
   <script>
@@ -26,47 +27,64 @@
   <script defer src="https://unpkg.com/mathlive"></script>
 
   <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #38bdf8;
-      --accent-hover: #0284c7;
-      --text-color: #f8fafc;
-      --subtext: #94a3b8;
-    }
-
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
       display: flex;
       flex-direction: column;
-      min-height: 100vh; /* 1. Force the body to span the full screen height */
+      min-height: 100vh;
       margin: 0;
-      padding: 0;        /* 2. Clear default body padding */
+      padding: 0;
     }
 
     .container {
       width: 100%;
       max-width: 650px;
       background: var(--card-bg);
+      border: 1px solid var(--border-color);
       padding: 30px;
       border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-      
-      margin: auto auto; /* Centering trick: centers container horizontally & vertically */
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      margin: 40px auto;
     }
 
-    akhilbee-footer {
-      margin-top: auto;
-      width: 100%;
-    } 
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
 
     h1 {
-      text-align: center;
-      margin-bottom: 24px;
+      margin: 0;
       font-weight: 700;
-      color: var(--accent);
+      color: var(--heading-color);
+      font-size: 1.8rem;
+    }
+
+    /* Circular Theme Toggle Button */
+    .theme-toggle-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+
+    .theme-toggle-btn:hover {
+      transform: scale(1.08);
+    }
+
+    .theme-svg path {
+      fill: var(--text-color);
+      transition: fill 0.3s ease;
     }
 
     /* Tabs */
@@ -79,19 +97,26 @@
     .tab-btn {
       flex: 1;
       padding: 10px 5px;
-      background: #334155;
-      border: none;
-      color: var(--subtext);
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
       font-weight: 600;
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.85rem;
       transition: all 0.2s ease;
+      opacity: 0.7;
+    }
+
+    .tab-btn:hover {
+      opacity: 1;
     }
 
     .tab-btn.active {
-      background: var(--accent);
-      color: #0f172a;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      border-color: var(--tag-bg);
+      opacity: 1;
     }
 
     /* Form Fields */
@@ -109,45 +134,48 @@
       display: block;
       margin-bottom: 6px;
       font-size: 0.9rem;
-      color: var(--subtext);
+      color: var(--text-color);
+      opacity: 0.85;
     }
 
     input {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
-      border: 1px solid #475569;
-      background: #0f172a;
-      color: #fff;
+      border: 1px solid var(--border-color);
+      background: var(--bg-color);
+      color: var(--text-color);
       font-size: 1rem;
       box-sizing: border-box;
+      transition: border-color 0.2s, background-color 0.3s;
     }
 
     input:focus {
       outline: none;
-      border-color: var(--accent);
+      border-color: var(--heading-color);
     }
 
     /* MathLive Custom Field Styling */
     math-field {
       width: 100%;
       font-size: 1.25rem;
-      background: #0f172a;
+      background: var(--bg-color);
       border-radius: 8px;
       padding: 8px 12px;
-      border: 1px solid #475569;
-      color: #fff;
+      border: 1px solid var(--border-color);
+      color: var(--text-color);
       box-sizing: border-box;
       outline: none;
       --hue: 199;
-      --template-background: #0f172a;
-      --text-color: #f8fafc;
-      --caret-color: #38bdf8;
-      --selection-background-color: #0284c7;
+      --template-background: var(--bg-color);
+      --text-color: var(--text-color);
+      --caret-color: var(--heading-color);
+      --selection-background-color: var(--border-color);
+      transition: border-color 0.2s, background-color 0.3s;
     }
 
     math-field:focus-within {
-      border-color: var(--accent);
+      border-color: var(--heading-color);
     }
 
     math-field::part(virtual-keyboard-toggle),
@@ -158,24 +186,23 @@
     button.submit-btn {
       width: 100%;
       padding: 12px;
-      background: var(--accent);
-      color: #0f172a;
+      background: var(--heading-color);
+      color: #ffffff;
       font-weight: bold;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
       cursor: pointer;
       margin-top: 10px;
-      transition: background 0.2s;
+      transition: opacity 0.2s;
     }
 
     button.submit-btn:hover {
-      background: var(--accent-hover);
-      color: #fff;
+      opacity: 0.9;
     }
 
     button.submit-btn:disabled {
-      background: #475569;
+      opacity: 0.5;
       cursor: not-allowed;
     }
 
@@ -183,9 +210,9 @@
     .result-box {
       margin-top: 24px;
       padding: 20px;
-      background: #0f172a;
+      background: var(--bg-color);
       border-radius: 8px;
-      border: 1px solid #334155;
+      border: 1px solid var(--border-color);
       min-height: 60px;
       display: flex;
       align-items: center;
@@ -193,18 +220,31 @@
       font-size: 1.3rem;
       text-align: center;
       overflow-x: auto;
+      transition: background-color 0.3s, border-color 0.3s;
     }
 
     .error {
-      color: #f87171;
+      color: #ef5350;
       font-size: 0.95rem;
+    }
+
+    akhilbee-footer {
+      margin-top: auto;
+      width: 100%;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>Calculus Solver</h1>
+    <div class="header-container">
+      <h1>Calculus Solver</h1>
+      <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle dark/light mode">
+        <svg class="theme-svg" viewBox="0 0 24 24" width="22" height="22">
+          <path fill="currentColor" d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.82.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/>
+        </svg>
+      </button>
+    </div>
 
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('derivatives', event)">Derivatives</button>
@@ -284,12 +324,41 @@
     </form>
 
     <div class="result-box" id="result-container">
-      <span style="color: var(--subtext);">Output equation will render here</span>
+      <span style="opacity: 0.7;">Output equation will render here</span>
     </div>
   </div>
 
+  <akhilbee-footer></akhilbee-footer>
+
   <script>
-    // Relative path works on both localhost and live deployment
+    // --- Theme Toggle Logic ---
+    const themeToggleBtn = document.getElementById('theme-toggle');
+
+    function applyTheme(theme) {
+      if (theme === 'dark') {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    }
+
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      applyTheme('dark');
+    } else {
+      applyTheme('light');
+    }
+
+    themeToggleBtn?.addEventListener('click', () => {
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      const newTheme = isDarkMode ? 'light' : 'dark';
+      applyTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+
+    // --- Application Logic ---
     const API_BASE_URL = "/api";
     let currentTab = "derivatives";
 
@@ -338,7 +407,7 @@
 
       submitBtn.disabled = true;
       submitBtn.innerText = "Calculating...";
-      resultDiv.innerHTML = `<span style="color: var(--subtext);">Calculating...</span>`;
+      resultDiv.innerHTML = `<span style="opacity: 0.7;">Calculating...</span>`;
 
       let endpoint = "";
       let payload = { latex_input: inputLatex };
@@ -392,7 +461,6 @@
       }
     }
   </script>
-  <akhilbee-footer></akhilbee-footer>
 </body>
 </html>
 {% endraw %}
