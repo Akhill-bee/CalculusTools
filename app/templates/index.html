@@ -40,9 +40,10 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       display: flex;
-      justify-content: center;
-      padding: 40px 20px;
+      flex-direction: column;
+      min-height: 100vh; /* 1. Force the body to span the full screen height */
       margin: 0;
+      padding: 0;        /* 2. Clear default body padding */
     }
 
     .container {
@@ -52,7 +53,14 @@
       padding: 30px;
       border-radius: 16px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      
+      margin: auto auto; /* Centering trick: centers container horizontally & vertically */
     }
+
+    akhilbee-footer {
+      margin-top: auto;
+      width: 100%;
+    } 
 
     h1 {
       text-align: center;
